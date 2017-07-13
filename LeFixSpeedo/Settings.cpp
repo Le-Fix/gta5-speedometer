@@ -15,6 +15,7 @@ const float Settings::needleRealisticDPS = 7.0f; //Degrees per second
 bool Settings::isActive = true;
 int Settings::currentSetting = 0;
 bool Settings::iktCompatible = false;
+bool Settings::isDebugMode = false;
 
 // Unit
 int Settings::unit[numVEHDOMAIN] = { KMH, KMH, KMH, KNO, KMH };
@@ -72,6 +73,7 @@ void Settings::SaveGlobal() {
 	settings.SetBoolValue("GENERAL", "isActive", isActive);
 	settings.SetLongValue("GENERAL", "currentSetting", currentSetting);
 	settings.SetBoolValue("GENERAL", "manualTransmissionSupport", iktCompatible);
+	settings.SetBoolValue("GENERAL", "debugMode", isDebugMode);
 
 	// Speedfactor
 	settings.SetDoubleValue("SPEEDFACTOR", "road", speedFactor[VD_ROAD]);
@@ -142,6 +144,7 @@ void Settings::LoadGlobal() {
 	isActive = settings.GetBoolValue("GENERAL", "isActive", true);
 	currentSetting = settings.GetLongValue("GENERAL", "currentSetting", 0);
 	iktCompatible = settings.GetBoolValue("GENERAL", "manualTransmissionSupport", false);
+	isDebugMode = settings.GetBoolValue("GENERAL", "debugMode", false);
 
 	// Speedfactor
 	speedFactor[VD_ROAD] = settings.GetDoubleValue("SPEEDFACTOR", "road", 1.0);

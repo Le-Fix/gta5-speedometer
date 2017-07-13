@@ -15,6 +15,7 @@ VehicleData::VehicleData()
 	rpm = 0.0f;
 	rpmMax = 5.0f;
 	fuel = 0.0f;
+	hasFuel = false;
 	ext2 = 1.0f;
 	ext3 = 1.0f;
 	gear = 0;
@@ -56,6 +57,9 @@ void VehicleData::update(Vehicle currentVehicle)
 
 		//Top Gear
 		updateGearMax();
+
+		//TankVolume
+		updateTankVolume();
 	}
 	if (veh != 0)
 	{
@@ -77,7 +81,7 @@ std::string VehicleData::get_brand_name_from_ini(std::string liveryName)
 	std::string brandName = readString(path, "LIVERY", liveryName, "UnkownLivery");
 	if (brandName == "UnkownLivery")
 	{
-		showSubtitle("Livery name: " + liveryName + "isn't registered in settingsBrand.ini (No Brand: 'Empty')", 1000);
+		if(Settings::isDebugMode) showSubtitle("Livery name: " + liveryName + "isn't registered in settingsBrand.ini (No Brand: 'Empty')", 5000);
 		brandName = "Empty";
 	}
 	return brandName;
@@ -89,7 +93,7 @@ float VehicleData::get_max_rpm_from_ini(std::string liveryName)
 	float maxRpm = readInt(path, "MAXRPM", liveryName, -1, 10, 150)  * 0.1f;
 	if (maxRpm < 0.0f)
 	{
-		showSubtitle("Livery name: " + liveryName + "isn't registered in settingsMaxRpm.ini (Default: '50x100rpm')", 1000);
+		if (Settings::isDebugMode) showSubtitle("Livery name: " + liveryName + "isn't registered in settingsMaxRpm.ini (Default: '50x100rpm')", 5000);
 		maxRpm = 5.0f;
 	}
 	return maxRpm;
@@ -144,13 +148,19 @@ void VehicleData::updateRpm()
 }
 void VehicleData::updateFuel()
 {
+	if (hasFuel) fuel = ext.GetFuelLevel(veh) / tankVolume;
+}
+void VehicleData::updateTankVolume()
+{
 	if (vDomain == VD_ROAD)
 	{
-		fuel = ext.GetFuelLevel(veh) / ext.GetPetrolTankVolume(veh);
+		tankVolume = ext.GetPetrolTankVolume(veh);
+		hasFuel = tankVolume > 0.0f;
 	}
 	else
 	{
-		fuel = 0.0f;
+		tankVolume = 1.0f;
+		hasFuel = false;
 	}
 }
 void VehicleData::updateDamage()

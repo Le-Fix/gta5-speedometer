@@ -10,8 +10,6 @@
 
 #include <menu.h>
 
-std::string modVersion = "v1.2.5";	//Mod Version (Menu Title)
-
 Player player;				//Reference to actual player
 Ped playerPed;				//Reference to actual ped
 
@@ -1169,9 +1167,18 @@ void update()
 	{
 		// Needle Color
 		set_needle_col();
+
 		// Velocity
 		set_vel_rot();
 		draw_veh_vel();
+
+		// Fuel stuff
+		if (vehData.hasFuel && Settings::featFuel)
+		{
+			set_fuel_rot();
+			draw_fuel();
+		}
+
 		// Damage
 		if (Settings::featDmg)
 		{
@@ -1179,11 +1186,9 @@ void update()
 			calculateAlphaDmgFade();
 			draw_car_dmg();
 		}
+
 		// Brand
-		if (Settings::featBrand)
-		{
-			draw_car_brand();
-		}
+		if (Settings::featBrand) draw_car_brand();
 
 		if (vehData.vDomain == VD_ROAD)
 		{
@@ -1195,12 +1200,6 @@ void update()
 			}
 			// Gear
 			if (Settings::featGear) draw_car_gear();
-			// Fuel stuff
-			if (Settings::featFuel)
-			{
-				set_fuel_rot();
-				draw_fuel();
-			}
 		}
 		//Vertical Velocity
 		if (vehData.vDomain == VD_AIR  && Settings::featVertical) draw_pla_vert();

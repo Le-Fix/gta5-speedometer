@@ -21,7 +21,7 @@ public:
 	std::string livery, brand;
 
 	bool isDashboardOn;
-
+	bool hasFuel;
 	float velocity, velocityVertical, fuel, damage;
 	float rpm, rpmMax;
 	int gear, gearMax;
@@ -33,6 +33,7 @@ public:
 private:
 
 	VehicleExtensions ext;
+	float tankVolume;
 
 	std::string get_brand_name_from_ini(std::string liveryName);
 	float get_max_rpm_from_ini(std::string liveryName);
@@ -43,6 +44,7 @@ private:
 	void updateVelocityVertical();
 	void updateRpm();
 	void updateFuel();
+	void updateTankVolume();
 	void updateDamage();
 	void updateGear();
 	void updateGearMax();

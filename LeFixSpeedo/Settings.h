@@ -26,6 +26,7 @@ public:
 	static bool isActive;
 	static int currentSetting;
 	static bool iktCompatible;
+	static bool isDebugMode;
 
 	//Speedfactor
 	static float speedFactor[numVEHDOMAIN];

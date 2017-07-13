@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="script.cpp" />
+    <ClCompile Include="..\..\GTAVMenuBase\menu.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GTAVMenuBase\menucontrols.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GTAVMenuBase\menukeyboard.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GTAVMenuBase\menusettings.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\GTAVMenuBase\menuutils.cpp">
+      <Filter>Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\INIutils.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\UIutils.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\VehicleExtensions.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory\NativeMemory.cpp">
+      <Filter>Memory</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="VehicleData.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="script.h" />
+    <ClInclude Include="..\..\GTAVMenuBase\menu.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GTAVMenuBase\menucontrols.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GTAVMenuBase\menukeyboard.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GTAVMenuBase\menusettings.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GTAVMenuBase\menuutils.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\INIutils.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\UIutils.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\VehicleExtensions.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Versions.h">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory\NativeMemory.hpp">
+      <Filter>Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\GTAVMenuBase\thirdparty\simpleini\SimpleIni.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="speedoEnums.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="VehicleData.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{1bb45fd9-ef8d-48cb-a29f-4327ad1ea1c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Util">
+      <UniqueIdentifier>{9e82721b-9f7f-42ba-8d51-631d555b2264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Memory">
+      <UniqueIdentifier>{a2b47682-dd00-4cd6-8e62-1930ef34ea9e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

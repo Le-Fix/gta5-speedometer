@@ -1,0 +1,12 @@
+# Folders
+.vs/
+**/bin/
+**/tmp/
+
+# Files
+*.tlog
+*.db
+*.opendb
+*.o
+*.obj
+*.pdb

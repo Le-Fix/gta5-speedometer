@@ -57,7 +57,6 @@ public:
 	static bool isExtraGaugeLeft;
 	static int ledsOffsetXInt, ledsOffsetYInt;
 	static float hudSizeExp, mainOffsetX, mainOffsetY;
-	static float hudSize; //Depends on hudSizeExp!!!
 
 private:
 	static std::string _filepath;

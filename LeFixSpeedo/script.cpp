@@ -20,6 +20,7 @@ bool isInMenu = false;
 bool isPassenger = false;
 int addFast = 0;				//Vehicle faster than expected, next Speedo
 float screenCorrect = 1.0f;
+float hudSize = 1.0f;
 
 //Velocity Values Picture Based (Unit...)
 float velPicMax[3][2][3];
@@ -53,7 +54,7 @@ bool isPrimColorValid = false;
 float needlePrimCol[3];
 float *needleActCol[3];
 
-float aDmgMin, aDmgMax, aDmg;
+float aDmg;
 
 //PLACEMENT
 float mainPosX, mainPosY;
@@ -73,7 +74,7 @@ static float ledCol[numRGB][9]; //[RGB][SEG]
 
 void drawTexture(int id, int index, int level, float size, float centerX, float centerY, float posX, float posY, float rotation, float r, float g, float b, float a)
 {
-	drawTexture(id, index, level, 150, Settings::hudSize*Settings::hudSizeConst*size, Settings::hudSize*Settings::hudSizeConst*size, centerX, centerY, posX, posY, rotation, screenCorrect, r, g, b, a*fade);
+	drawTexture(id, index, level, 150, hudSize*Settings::hudSizeConst*size, hudSize*Settings::hudSizeConst*size, centerX, centerY, posX, posY, rotation, screenCorrect, r, g, b, a*fade);
 }
 void drawTexture(int id, int index, int level, float size, float posX, float posY, float rotation, float r, float g, float b, float a)
 {
@@ -419,15 +420,18 @@ void setupTextures(){
 //Placement of elemets which are relative to others
 void relativePlacement(){
 
+	//Hud Size
+	hudSize = exp2f(Settings::hudSizeExp - 1.0f);
+
 	//Size correction, static right bottom corner while changing hudsize
-	mainPosX = Settings::mainOffsetX - 0.098f*(Settings::hudSize - 1.0f);
-	mainPosY = Settings::mainOffsetY - 0.091f*(Settings::hudSize - 1.0f) / screenCorrect;
+	mainPosX = Settings::mainOffsetX - 0.098f*(hudSize - 1.0f);
+	mainPosY = Settings::mainOffsetY - 0.091f*(hudSize - 1.0f) / screenCorrect;
 
 	//Extra gauge
-	extraPosX  = mainPosX + Settings::hudSize * Settings::hudSizeConst * (381.0f / 1024.0f);
-	extraPosY  = mainPosY - Settings::hudSize * Settings::hudSizeConst * (496.0f / 1024.0f) * screenCorrect;
-	extraPosX2 = mainPosX - Settings::hudSize * Settings::hudSizeConst * (557.0f / 1024.0f);
-	extraPosY2 = mainPosY + Settings::hudSize * Settings::hudSizeConst * (178.0f / 1024.0f) * screenCorrect;
+	extraPosX  = mainPosX + hudSize * Settings::hudSizeConst * (381.0f / 1024.0f);
+	extraPosY  = mainPosY - hudSize * Settings::hudSizeConst * (496.0f / 1024.0f) * screenCorrect;
+	extraPosX2 = mainPosX - hudSize * Settings::hudSizeConst * (557.0f / 1024.0f);
+	extraPosY2 = mainPosY + hudSize * Settings::hudSizeConst * (178.0f / 1024.0f) * screenCorrect;
 
 	if (Settings::isExtraGaugeLeft)
 	{
@@ -440,9 +444,9 @@ void relativePlacement(){
 	}
 
 	//Led RPM
-	rpmGap = Settings::hudSize * Settings::hudSizeConst * ( 50.0f / 1024.0f);
-	rpmLedX = mainPosX + Settings::hudSize * Settings::hudSizeConst * (Settings::ledsOffsetXInt*2.0f / 1024.0f) - 4 * rpmGap;
-	rpmLedY = mainPosY + Settings::hudSize * Settings::hudSizeConst * (Settings::ledsOffsetYInt*2.0f / 1024.0f) * screenCorrect;
+	rpmGap = hudSize * Settings::hudSizeConst * ( 50.0f / 1024.0f);
+	rpmLedX = mainPosX + hudSize * Settings::hudSizeConst * (Settings::ledsOffsetXInt*2.0f / 1024.0f) - 4 * rpmGap;
+	rpmLedY = mainPosY + hudSize * Settings::hudSizeConst * (Settings::ledsOffsetYInt*2.0f / 1024.0f) * screenCorrect;
 }
 
 //Load and Save to INI Methods
@@ -856,9 +860,9 @@ void draw_car_gear(){
 	}
 
 	//If rpm is displayed analogue, and shift up/down indicator is on, the gear will flash
-	if (lastShiftIndicator > GetTickCount()-400 && Settings::featRpm == RPM_ANLG && (GetTickCount() % 400) < 220)
+	if (false)//lastShiftIndicator > GetTickCount()-400 && Settings::featRpm == RPM_ANLG && (GetTickCount() % 400) < 220)
 	{
-		stopTexture(idGear[vehData.gear + 1], 0);
+		stopTexture(idGear[vehData.gear + 1], 0); //TODO
 	}
 	else
 	{
@@ -967,7 +971,7 @@ void fadeIn()
 bool isFadeOut()
 {
 	// check if vehicle dashboard is on
-	if (!vehData.isDashboardOn) return true;
+	//if (!vehData.isDashboardOn) return true;
 	// check if enable in vehicle domain
 	if (!Settings::isEnabledInVehDomain[vehData.vDomain]) return true;
 	// check if player is in any vehicle
@@ -1017,14 +1021,12 @@ void calculateAlphaTime(){
 	}
 }
 //Alpha Damage
-void calculateAlphaDmgMinMax()
-{
-	aDmgMax = (vehData.damage-0.2f)*1.0f/0.8f;
-	aDmgMin = aDmgMax - 0.5f;
-}
 void calculateAlphaDmgFade()
 {
 	static bool isInc = true;
+
+	float aDmgMax = (vehData.damage - 0.2f)*1.0f / 0.8f;
+	float aDmgMin = aDmgMax - 0.5f;
 
 	//Difference between Min and Max
 	float diff = aDmgMax - aDmgMin;
@@ -1182,7 +1184,6 @@ void update()
 		// Damage
 		if (Settings::featDmg)
 		{
-			calculateAlphaDmgMinMax();
 			calculateAlphaDmgFade();
 			draw_car_dmg();
 		}
@@ -1202,7 +1203,11 @@ void update()
 			if (Settings::featGear) draw_car_gear();
 		}
 		//Vertical Velocity
-		if (vehData.vDomain == VD_AIR  && Settings::featVertical) draw_pla_vert();
+		if (vehData.vDomain == VD_AIR  && Settings::featVertical)
+		{
+			set_pla_vert_rot();
+			draw_pla_vert();
+		}
 	}
 	
 }
@@ -1220,14 +1225,15 @@ void updateMenu()
 		menu.BoolOption("Manual Transmission Support", Settings::iktCompatible, { "Mod by ikt@gta5mods, if both mods enable compatibility mode, they will pass additional vehicle stats using the DECORATOR namespace. This isn't supported on some mp servers." });
 		menu.MenuOption("Units", "unitsmenu", { "Set the units displayed on the different HUDs." });
 		menu.MenuOption("Speedfactor", "speedfactormenu", { "Distort displayed velocity by factors, may be used if displayed velocity 'feels' wrong or while screen capturing." });
+		menu.MenuOption("Toggle HUD", "togglemenu", { "Toggle HUD visibility for different type of vehicles." });
 		int oldSetting = Settings::currentSetting;
 		menu.StringArray("Current Setting", { "A", "B", "C" }, Settings::currentSetting, { "This mod saves three different settings. (However the settings above are 'global' settings.)" });
 		if (oldSetting != Settings::currentSetting)
 		{
 			Settings::SaveLocal(oldSetting);
 			Settings::LoadLocal(Settings::currentSetting);
+			relativePlacement();
 		}
-		menu.MenuOption("Toggle HUD", "togglemenu", { "Toggle HUD visibility for different type of vehicles." });
 		menu.MenuOption("Features", "featuremenu", { "Toggle multiple optional features." });
 		menu.MenuOption("Visual", "visualmenu", { "Color and alpha values." });
 		menu.MenuOption("Placement", "placementmenu", { "All settings related to size and screen position." });
@@ -1276,6 +1282,7 @@ void updateMenu()
 
 		menu.BoolOption("Gear", Settings::featGear, { "Gear display for all road vehicles, explicitly supports Manual Transmission mod by ikt." });
 		menu.StringArray("RPM", { "Off", "Analog", "LEDs" }, Settings::featRpm, { "RPM display either analog or with LEDs.", "Color is defined in ...Extended.ini" });
+		menu.BoolOption("Fuel", Settings::featFuel, { "Enables fuel gauge while driving road vehicles with a fuel tank. Intended for 'Simple Fuel' or any other mod change the native fuel level." });
 		menu.BoolOption("Vertical Speed", Settings::featVertical, { "Displays vertical velocity in meters per second on a logarithmic scale for all aircrafts." });
 		menu.BoolOption("Brand", Settings::featBrand, { "Optional brand logo for all vehicles. Brands are registered using the livery name and real life brands can be added easily in ...Brands.ini" });
 		menu.BoolOption("Show Handbrake", Settings::featHBrake, { "Display 'N' on gear display while using handbrake." });
@@ -1314,11 +1321,7 @@ void updateMenu()
 		b = b || menu.IntOption("LED Offset X", Settings::ledsOffsetXInt, -1000, 1000, 2, { "LEDs offset from Main HUD center." });
 		b = b || menu.IntOption("LED Offset Y", Settings::ledsOffsetYInt, -1000, 1000, 2, { "LEDs offset from Main HUD center." });
 
-		if (b)
-		{
-			Settings::hudSize = exp2f(Settings::hudSizeExp - 1.0f);
-			relativePlacement();
-		}
+		if (b) relativePlacement();
 	}
 
 	menu.EndMenu();

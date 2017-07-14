@@ -54,7 +54,6 @@ bool Settings::isExtraGaugeLeft = true;
 int Settings::ledsOffsetXInt = 0;
 int Settings::ledsOffsetYInt = 70;
 float Settings::hudSizeExp = 1.0f;
-float Settings::hudSize = 1.0f;
 float Settings::mainOffsetX = 0.9f;
 float Settings::mainOffsetY = 0.92f;
 
@@ -89,6 +88,13 @@ void Settings::SaveGlobal() {
 	settings.SetLongValue("UNIT", "rail", unit[VD_RAIL]);
 	settings.SetLongValue("UNIT", "water", unit[VD_WATER]);
 
+	// Toggle
+	settings.SetBoolValue("TOGGLE", "road", isEnabledInVehDomain[VD_ROAD]);
+	settings.SetBoolValue("TOGGLE", "air", isEnabledInVehDomain[VD_AIR]);
+	settings.SetBoolValue("TOGGLE", "water", isEnabledInVehDomain[VD_WATER]);
+	settings.SetBoolValue("TOGGLE", "velo", isEnabledInVehDomain[VD_VELO]);
+	settings.SetBoolValue("TOGGLE", "rail", isEnabledInVehDomain[VD_RAIL]);
+
 	//Write to File
 	settings.SaveFile(path.c_str());
 }
@@ -99,13 +105,6 @@ void Settings::SaveLocal(int x) {
 	CSimpleIniA settings;
 	settings.SetUnicode();
 	settings.LoadFile(path.c_str());
-
-	// Toggle
-	settings.SetBoolValue("TOGGLE", "road",		isEnabledInVehDomain[VD_ROAD]);
-	settings.SetBoolValue("TOGGLE", "air",		isEnabledInVehDomain[VD_AIR]);
-	settings.SetBoolValue("TOGGLE", "water",	isEnabledInVehDomain[VD_WATER]);
-	settings.SetBoolValue("TOGGLE", "velo",		isEnabledInVehDomain[VD_VELO]);
-	settings.SetBoolValue("TOGGLE", "rail",		isEnabledInVehDomain[VD_RAIL]);
 
 	// Visual
 	settings.SetDoubleValue("VISUAL", "alphaFront", alphaFrontMax);
@@ -125,6 +124,19 @@ void Settings::SaveLocal(int x) {
 	settings.SetDoubleValue("PLACEMENT", "hudSize", hudSizeExp);
 	settings.SetDoubleValue("PLACEMENT", "hudOffsetX", mainOffsetX);
 	settings.SetDoubleValue("PLACEMENT", "hudOffsetY", mainOffsetY);
+
+	//Features
+	settings.SetLongValue("FEATURES", "rpm", featRpm);
+	settings.SetBoolValue("FEATURES", "gear", featGear);
+	settings.SetBoolValue("FEATURES", "dmg", featDmg);
+	settings.SetBoolValue("FEATURES", "vertical", featVertical);
+	settings.SetBoolValue("FEATURES", "brand", featBrand);
+	settings.SetBoolValue("FEATURES", "hbrake", featHBrake);
+	settings.SetBoolValue("FEATURES", "fuel", featFuel);
+
+	settings.SetBoolValue("FEATURES", "fpv", isShownInFpv);
+	settings.SetBoolValue("FEATURES", "passenger", isShownAsPassenger);
+	settings.SetBoolValue("FEATURES", "highspeedo", useHighSpeedoByDefault);
 
 	//Write to Mode File
 	settings.SaveFile(path.c_str());
@@ -159,6 +171,13 @@ void Settings::LoadGlobal() {
 	unit[VD_VELO] = settings.GetLongValue("UNIT", "velo", KMH);
 	unit[VD_RAIL] = settings.GetLongValue("UNIT", "rail", KMH);
 	unit[VD_WATER] = settings.GetLongValue("UNIT", "water", KNO);
+
+	// Toggle
+	isEnabledInVehDomain[VD_ROAD] = settings.GetBoolValue("TOGGLE", "road", true);
+	isEnabledInVehDomain[VD_AIR] = settings.GetBoolValue("TOGGLE", "air", true);
+	isEnabledInVehDomain[VD_WATER] = settings.GetBoolValue("TOGGLE", "water", true);
+	isEnabledInVehDomain[VD_VELO] = settings.GetBoolValue("TOGGLE", "velo", true);
+	isEnabledInVehDomain[VD_RAIL] = settings.GetBoolValue("TOGGLE", "rail", true);
 }
 
 void Settings::LoadLocal(int x) {
@@ -170,13 +189,6 @@ void Settings::LoadLocal(int x) {
 	CSimpleIniA settings;
 	settings.SetUnicode();
 	settings.LoadFile(path.c_str());
-
-	// Toggle
-	isEnabledInVehDomain[VD_ROAD]	= settings.GetBoolValue("TOGGLE", "road", true);
-	isEnabledInVehDomain[VD_AIR]	= settings.GetBoolValue("TOGGLE", "air", true);
-	isEnabledInVehDomain[VD_WATER]	= settings.GetBoolValue("TOGGLE", "water", true);
-	isEnabledInVehDomain[VD_VELO]	= settings.GetBoolValue("TOGGLE", "velo", true);
-	isEnabledInVehDomain[VD_RAIL]	= settings.GetBoolValue("TOGGLE", "rail", true);
 
 	// Visual
 	alphaFrontMax = settings.GetDoubleValue("VISUAL", "alphaFront", 1.0);
@@ -196,4 +208,17 @@ void Settings::LoadLocal(int x) {
 	hudSizeExp = settings.GetDoubleValue("PLACEMENT", "hudSize", 1.0);
 	mainOffsetX = settings.GetDoubleValue("PLACEMENT", "hudOffsetX", 0.9);
 	mainOffsetY = settings.GetDoubleValue("PLACEMENT", "hudOffsetY", 0.92);
+
+	//Features
+	featRpm = settings.GetLongValue("FEATURES", "rpm", RPM_ANLG);
+	featGear = settings.GetBoolValue("FEATURES", "gear", true);
+	featDmg = settings.GetBoolValue("FEATURES", "dmg", true);
+	featVertical = settings.GetBoolValue("FEATURES", "vertical", true);
+	featBrand = settings.GetBoolValue("FEATURES", "brand", true);
+	featHBrake = settings.GetBoolValue("FEATURES", "hbrake", false);
+	featFuel = settings.GetBoolValue("FEATURES", "fuel", true);
+
+	isShownInFpv = settings.GetBoolValue("FEATURES", "fpv", false);
+	isShownAsPassenger = settings.GetBoolValue("FEATURES", "passenger", false);
+	useHighSpeedoByDefault = settings.GetBoolValue("FEATURES", "highspeedo", false);
 }

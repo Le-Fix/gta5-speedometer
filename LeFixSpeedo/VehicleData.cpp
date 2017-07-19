@@ -16,7 +16,7 @@ VehicleData::VehicleData()
 	rpmMax = 5.0f;
 	fuel = 0.0f;
 	hasFuel = false;
-	ext2 = 1.0f;
+	engineTemp = 0.0f;
 	ext3 = 1.0f;
 	gear = 0;
 	gearMax = 0;
@@ -61,13 +61,14 @@ void VehicleData::update(Vehicle currentVehicle)
 		//TankVolume
 		updateTankVolume();
 	}
-	if (veh != 0)
+	if (veh != 0 && ENTITY::DOES_ENTITY_EXIST(veh))
 	{
 		updateDashboard();
 		updateVelocity();
 		updateVelocityVertical();
 		updateRpm();
 		updateFuel();
+		updateEngineTemp();
 		updateDamage();
 		updateGear();
 		updateHandbrake();
@@ -149,6 +150,10 @@ void VehicleData::updateRpm()
 void VehicleData::updateFuel()
 {
 	if (hasFuel) fuel = ext.GetFuelLevel(veh) / tankVolume;
+}
+void VehicleData::updateEngineTemp()
+{
+	//TODO
 }
 void VehicleData::updateTankVolume()
 {

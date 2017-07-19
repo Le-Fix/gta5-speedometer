@@ -22,11 +22,11 @@ public:
 
 	bool isDashboardOn;
 	bool hasFuel;
-	float velocity, velocityVertical, fuel, damage;
+	float velocity, velocityVertical, damage;
 	float rpm, rpmMax;
 	int gear, gearMax;
 	float gearAcc;
-	float ext2, ext3;
+	float fuel, engineTemp, ext3;
 	bool handbrake;
 	bool shiftUp, shiftDown;
 
@@ -44,6 +44,7 @@ private:
 	void updateVelocityVertical();
 	void updateRpm();
 	void updateFuel();
+	void updateEngineTemp();
 	void updateTankVolume();
 	void updateDamage();
 	void updateGear();

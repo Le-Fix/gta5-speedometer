@@ -21,6 +21,8 @@ bool isPassenger = false;
 int addFast = 0;				//Vehicle faster than expected, next Speedo
 float screenCorrect = 1.0f;
 float hudSize = 1.0f;
+float fadeOutTime = 0.5f;
+float fadeInTime = 2.0f;
 
 //Velocity Values Picture Based (Unit...)
 float velPicMax[3][2][3];
@@ -42,7 +44,7 @@ int idRpm3, idRpm5, idRpm6, idRpm8, idRpm9, idRpm10, idRpm12;	//RPM: Scales Max 
 int idRpmLedOn, idRpmLedOff;									//RPM: LED
 int idShadowMain, idShadowLeft, idShadowAbove, idDmg;			//Background: Shadow, Carbon, etc.
 int idNeedleBigA, idNeedleBigB, idNeedleSmallA, idNeedleSmallB;	//Needles
-int idFuelScale, idExtFuel[3];		//Fuel
+int idFuelScale, idFuelLogo, idEngineLogo, idGearLogo;		//Fuel
 int idBrandLogo;
 
 //Dash Data
@@ -412,9 +414,9 @@ void setupTextures(){
 
 	//Fuel
 	idFuelScale  = create_texture("Fuel\\FuelScale.png");
-	idExtFuel[0] = create_texture("Fuel\\FuelLogo.png");
-	idExtFuel[1] = create_texture("Fuel\\GearLogo.png");
-	idExtFuel[2] = create_texture("Fuel\\EngineLogo.png");
+	idFuelLogo = create_texture("Fuel\\FuelLogo.png");
+	idGearLogo = create_texture("Fuel\\GearLogo.png");
+	idEngineLogo = create_texture("Fuel\\EngineLogo.png");
 }
 
 //Placement of elemets which are relative to others
@@ -456,6 +458,9 @@ void read_ini_extended()
 	path = path + "LeFixSpeedo\\settingsExtended.ini";
 
 	//Constants
+
+	fadeOutTime = ((float)readInt(path, "CONSTANTS", "fadeOutTimeMs",  500, 1, 5000)) / 1000.0f;
+	fadeInTime =  ((float)readInt(path, "CONSTANTS", "fadeInTimeMs",  2000, 1, 5000)) / 1000.0f;
 
 	ledCol[R][0] = ((float)readInt(path, "CONSTANTS", "led1R",   0,   0, 255)) / 255.0f;
 	ledCol[G][0] = ((float)readInt(path, "CONSTANTS", "led1G", 255,   0, 255)) / 255.0f;
@@ -903,21 +908,25 @@ void set_fuel_rot()
 void draw_fuel()
 {
 	//Set color of symbols and draw
-	float extFuelCol[numRGB][3]; //[RGBA][1,2,3]
-	for (int ext = 0; ext < 3; ext++) {
-		for (int col = 0; col < 3; col++) {
-			extFuelCol[col][ext] = 1.0f;
+	float fuelCol[numRGB];
+	float gearCol[numRGB];
+	float engnCol[numRGB];
 
-			if (col == G || col == B)
-			{
-				if (vehData.ext2 < 0.5f)
-				{
-					extFuelCol[col][ext] = 2 * vehData.ext2;
-				}
-			}
-		}
-		drawTexture(idExtFuel[ext], 0, levelBack, 1.0f, extraPosX2, extraPosY2, 0.0f, extFuelCol[R][ext], extFuelCol[G][ext], extFuelCol[B][ext], Settings::alphaFrontMax*aTimeAdjust);
-	}
+	fuelCol[R] = 1.0f;
+	engnCol[R] = 1.0f;
+	gearCol[R] = 1.0f;
+
+	fuelCol[G] = vehData.fuel > 0.5f ? 1.0f : 2.0f * vehData.fuel;
+	engnCol[G] = vehData.engineTemp < 0.5f ? 1.0f : 2.0f * (1.0f - vehData.engineTemp);
+	gearCol[G] = 1.0f;
+
+	fuelCol[B] = fuelCol[G];
+	engnCol[B] = engnCol[G];
+	gearCol[B] = gearCol[G];
+
+	drawTexture(idFuelLogo,   0, levelBack, 1.0f, extraPosX2, extraPosY2, 0.0f, fuelCol[R], fuelCol[G], fuelCol[B], Settings::alphaFrontMax*aTimeAdjust);
+	drawTexture(idEngineLogo, 0, levelBack, 1.0f, extraPosX2, extraPosY2, 0.0f, engnCol[R], engnCol[G], engnCol[B], Settings::alphaFrontMax*aTimeAdjust);
+	drawTexture(idGearLogo,   0, levelBack, 1.0f, extraPosX2, extraPosY2, 0.0f, gearCol[R], gearCol[G], gearCol[B], Settings::alphaFrontMax*aTimeAdjust);
 
 	drawTexture(idFuelScale, 0, levelBack, extraPosX2, extraPosY2, Settings::alphaFrontMax*aTimeAdjust);
 	drawTexture(idNeedleSmallA, 1, levelNeedle, 1.0f, extraPosX2, extraPosY2, fuelRot, *needleActCol[R], *needleActCol[G], *needleActCol[B], Settings::alphaFrontMax*aTimeAdjust);
@@ -939,7 +948,7 @@ void fadeOut()
 	if (fade > 0.0f)
 	{
 		//Fadout out speed 1.0f
-		fade -= 2.0f*GAMEPLAY::GET_FRAME_TIME();
+		fade -= GAMEPLAY::GET_FRAME_TIME() / fadeOutTime;
 		//Valid Borders
 		if (fade < 0.0f)
 		{
@@ -956,7 +965,7 @@ void fadeIn()
 	if (fade < 1.0f)
 	{
 		//Fade in speed 0.5
-		fade += 0.5f*GAMEPLAY::GET_FRAME_TIME();
+		fade += GAMEPLAY::GET_FRAME_TIME() / fadeInTime;
 		//Valid Borders
 		if (fade < 0.0f)
 		{
@@ -1219,7 +1228,7 @@ void updateMenu()
 	if (menu.CurrentMenu("mainmenu"))
 	{
 		menu.Title("Speedometer");
-		menu.Subtitle("v1.3 by LeFix");
+		menu.Subtitle("v1.3.1 by LeFix");
 
 		menu.BoolOption("Mod Enabled", Settings::isActive, { "Enable/Disable the entire mod." });
 		menu.BoolOption("Manual Transmission Support", Settings::iktCompatible, { "Mod by ikt@gta5mods, if both mods enable compatibility mode, they will pass additional vehicle stats using the DECORATOR namespace. This isn't supported on some mp servers." });

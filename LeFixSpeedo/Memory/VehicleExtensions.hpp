@@ -21,5 +21,11 @@ public:
 
 
 private:
+	// only run this once because patterns
+	void getOffsets();
 	eGameVersion gameVersion = getGameVersion();
+
+	uint64_t handlingOffset;
+	uint64_t rpmOffset;
+
 };

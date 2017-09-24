@@ -3,25 +3,35 @@
 #include "NativeMemory.hpp"
 #include "Versions.h"
 #include "Offsets.hpp"
+#include "../Util/Logger.hpp"
 
 VehicleExtensions::VehicleExtensions() {
+	logger.SetFile("./LeFixSpeedo.log");
+	logger.Clear();
 	mem::init();
+	getOffsets();
 }
 
 BYTE *VehicleExtensions::GetAddress(Vehicle handle) {
 	return reinterpret_cast<BYTE *>(mem::GetAddressOfEntity(handle));
 }
 
+void VehicleExtensions::getOffsets() {
+	auto addr = mem::FindPattern("\x3C\x03\x0F\x85\x00\x00\x00\x00\x48\x8B\x41\x20\x48\x8B\x88",
+		"xxxx????xxxxxxx");
+	handlingOffset = *(int*)(addr + 0x16);
+	logger.Write("Handling Offset: " + std::to_string(handlingOffset));
+
+	addr = mem::FindPattern("\xF3\x44\x0F\x10\x93\x00\x00\x00\x00\xF3\x0F\x10\x0D",
+		"xxxxx????xxxx");
+	rpmOffset = *(int*)(addr + 5);
+	logger.Write("RPM Offset: " + std::to_string(rpmOffset));
+}
+
 float VehicleExtensions::GetCurrentRPM(Vehicle handle) {
 	auto address = GetAddress(handle);
 
-	auto offset = gameVersion >= G_VER_1_0_372_2_STEAM ? 0x7D4 : 0x7C4;
-	offset = gameVersion >= G_VER_1_0_877_1_STEAM ? 0x7F4 : offset;
-	offset = gameVersion >= G_VER_1_0_944_2_STEAM ? 0x814 : offset;
-	offset = gameVersion >= G_VER_1_0_1103_2_STEAM ? 0x824 : offset;
-	offset = gameVersion >= G_VER_1_0_1180_2_STEAM ? 0x844 : offset;
-
-	return address == nullptr ? 0.0f : *reinterpret_cast<const float *>(address + offset);
+	return address == nullptr ? 0.0f : *reinterpret_cast<const float *>(address + rpmOffset);
 }
 
 float VehicleExtensions::GetFuelLevel(Vehicle handle) {
@@ -39,13 +49,7 @@ float VehicleExtensions::GetFuelLevel(Vehicle handle) {
 uint64_t VehicleExtensions::GetHandlingPtr(Vehicle handle) {
 	auto address = GetAddress(handle);
 
-	auto offset = gameVersion >= G_VER_1_0_791_2_STEAM ? 0x830 : 0;
-	offset = gameVersion >= G_VER_1_0_877_1_STEAM ? 0x850 : offset;
-	offset = gameVersion >= G_VER_1_0_944_2_STEAM ? 0x878 : offset;
-	offset = gameVersion >= G_VER_1_0_1103_2_STEAM ? 0x888 : offset;
-	offset = gameVersion >= G_VER_1_0_1180_2_STEAM ? 0x8A8 : offset;
-
-	return *reinterpret_cast<uint64_t *>(address + offset);
+	return *reinterpret_cast<uint64_t *>(address + handlingOffset);
 }
 
 float VehicleExtensions::GetPetrolTankVolume(Vehicle handle) {

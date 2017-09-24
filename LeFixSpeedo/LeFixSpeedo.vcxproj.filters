@@ -32,6 +32,9 @@
     </ClCompile>
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="VehicleData.cpp" />
+    <ClCompile Include="Util\Logger.cpp">
+      <Filter>Util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="script.h" />
@@ -71,6 +74,9 @@
     <ClInclude Include="speedoEnums.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="VehicleData.h" />
+    <ClInclude Include="Util\Logger.hpp">
+      <Filter>Util</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Menu">

@@ -1228,7 +1228,7 @@ void updateMenu()
 	if (menu.CurrentMenu("mainmenu"))
 	{
 		menu.Title("Speedometer");
-		menu.Subtitle("v1.3.1 by LeFix");
+		menu.Subtitle("v1.3.2 by LeFix");
 
 		menu.BoolOption("Mod Enabled", Settings::isActive, { "Enable/Disable the entire mod." });
 		menu.BoolOption("Manual Transmission Support", Settings::iktCompatible, { "Mod by ikt@gta5mods, if both mods enable compatibility mode, they will pass additional vehicle stats using the DECORATOR namespace. This isn't supported on some mp servers." });

@@ -2,6 +2,10 @@
 #include <string>
 #include <vector>
 
+#define DISPLAY_VERSION "v4.3.6"
+#define CORRECTVGENERAL "430"
+#define CORRECTVWHEEL   "430"
+
 static std::vector<std::string> GameVersionString = {
 	"VER_1_0_335_2_STEAM", // 00
 	"VER_1_0_335_2_NOSTEAM", // 01
@@ -56,9 +60,6 @@ static std::vector<std::string> GameVersionString = {
 
 	"VER_1_0_1103_2_STEAM", // 34
 	"VER_1_0_1103_2_NOSTEAM", // 35
-
-	"VER_1_0_1180_2_STEAM", // 36
-	"VER_1_0_1180_2_NOSTEAM", // 37
 };
 
 enum G_GameVersion : int {
@@ -115,9 +116,6 @@ enum G_GameVersion : int {
 
 	G_VER_1_0_1103_2_STEAM, // 34
 	G_VER_1_0_1103_2_NOSTEAM, // 35
-
-	G_VER_1_0_1180_2_STEAM, // 36
-	G_VER_1_0_1180_2_NOSTEAM, // 37
 };
 
 static std::string eGameVersionToString(int version) {
